@@ -1,0 +1,11 @@
+@use "breakpoints" as *;
+
+@mixin font-xs {
+  font-size: 10px;
+  line-height: 1.4;
+
+  @include min-sm {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}

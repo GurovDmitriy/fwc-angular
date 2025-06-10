@@ -1,0 +1,7 @@
+@let loading = authLoader.state$ | async;
+
+@if (loading) {
+  <div class="loader">
+    <nz-spin nzSimple></nz-spin>
+  </div>
+}

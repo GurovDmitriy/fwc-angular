@@ -1,0 +1,64 @@
+<nz-layout class="layout-home">
+  <ng-container *ngIf="media.state$ | async as state">
+    @if (!(state.xs || state.sm)) {
+      <nz-sider
+        class="layout-home__sider--ghost"
+        nzCollapsible
+        [nzCollapsed]="isCollapsedSider"
+        [nzTrigger]="null"
+      >
+      </nz-sider>
+      <nz-sider
+        class="layout-home__sider"
+        nzCollapsible
+        [nzCollapsed]="isCollapsedSider"
+        [nzTrigger]="null"
+      >
+        <div class="layout-home__sider-container">
+          <app-sider-panel
+            [isCollapsed]="isCollapsedSider"
+            (toggleMenu)="handleMenuToggle()"
+          ></app-sider-panel>
+        </div>
+      </nz-sider>
+    }
+  </ng-container>
+  <nz-layout class="layout-home__container">
+    <nz-header class="layout-home__header">
+      <div
+        (waResizeObserver)="handleResizeHeader($event)"
+        class="layout-home__header-resizer"
+      >
+        <nz-affix class="layout-home__header-affix">
+          <div class="layout-home__header-inner">
+            <div class="layout-home__header-container">
+              <app-header-panel></app-header-panel>
+            </div>
+          </div>
+        </nz-affix>
+      </div>
+    </nz-header>
+    <nz-content class="layout-home__content">
+      <div class="layout-home__content-inner">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+    <nz-footer class="layout-home__footer">
+      <div class="layout-home__footer-inner">
+        <ng-container *ngIf="media.state$ | async as state">
+          @if (state.xs || state.sm) {
+            <nz-affix class="layout-home__footer-affix" nzOffsetBottom="0">
+              <div class="layout-home__footer-container">
+                <app-footer-panel-mobile></app-footer-panel-mobile>
+              </div>
+            </nz-affix>
+          } @else {
+            <div class="layout-home__footer-container-desktop">
+              <app-footer-panel></app-footer-panel>
+            </div>
+          }
+        </ng-container>
+      </div>
+    </nz-footer>
+  </nz-layout>
+</nz-layout>

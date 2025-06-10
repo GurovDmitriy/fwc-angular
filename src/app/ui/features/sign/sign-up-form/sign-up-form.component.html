@@ -1,0 +1,58 @@
+@let errorMessages = signUp.errorMessages$ | async;
+@let state = signUp.state$ | async;
+@let formMeta = signUp.formMeta$ | async;
+
+<div class="sign-up-form">
+  <nz-card class="card" nzTitle="Sign Up">
+    <form
+      nz-form
+      [formGroup]="signUp.form"
+      class="form"
+      (ngSubmit)="handleAction('submit')"
+    >
+      @for (field of formMeta; track field.name) {
+        <app-form-field-dynamic
+          [form]="signUp.form"
+          [errorMessage]="errorMessages?.[field.name]"
+          [formMeta]="field"
+        ></app-form-field-dynamic>
+      }
+
+      @if (state?.error) {
+        <div class="error-message">
+          <nz-alert
+            nzType="error"
+            [nzMessage]="state?.error?.message || null"
+          ></nz-alert>
+        </div>
+      }
+
+      <div class="button-box">
+        <div class="button-box-col">
+          <button
+            nz-button
+            [nzType]="'primary'"
+            [nzLoading]="state?.status === 'pending' || signUp.form.pending"
+            [disabled]="!signUp.form.valid"
+            type="submit"
+          >
+            Sign Up
+          </button>
+          or
+          <a routerLink="/sign-in">Sign In</a>
+        </div>
+        <div class="button-box-col">
+          <button
+            nz-button
+            [disabled]="state?.status === 'pending' || signUp.form.pending"
+            type="button"
+            (click)="signUp.toggleAbout()"
+            type="button"
+          >
+            About
+          </button>
+        </div>
+      </div>
+    </form>
+  </nz-card>
+</div>

@@ -1,0 +1,17 @@
+@mixin font-face(
+  $name,
+  $font-family,
+  $file-path,
+  $weight: normal,
+  $style: normal
+) {
+  @font-face {
+    font-weight: $weight;
+    font-family: $name;
+    font-style: $style;
+    src: url("#{$file-path}/#{$font-family}.woff2") format("woff2");
+
+    // url("#{$file-path}.woff") format("woff");
+    // font-display: optional;
+  }
+}

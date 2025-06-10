@@ -1,0 +1,46 @@
+@use "sass:map";
+
+$map-breakpoints: (
+  xs: 575px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1600px,
+);
+
+:root {
+  @each $key, $value in $map-breakpoints {
+    --app-breakpoint-#{$key}: $value;
+  }
+}
+
+@mixin min-sm {
+  @media (min-width: var(--app-breakpoint-sm)) {
+    @content;
+  }
+}
+
+@mixin min-md {
+  @media (min-width: var(--app-breakpoint-md)) {
+    @content;
+  }
+}
+
+@mixin min-lg {
+  @media (min-width: var(--app-breakpoint-lg)) {
+    @content;
+  }
+}
+
+@mixin min-xl {
+  @media (min-width: var(--app-breakpoint-xl)) {
+    @content;
+  }
+}
+
+@mixin min-xxl {
+  @media (min-width: var(--app-breakpoint-xxl)) {
+    @content;
+  }
+}

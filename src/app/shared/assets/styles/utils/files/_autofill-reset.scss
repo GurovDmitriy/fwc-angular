@@ -1,0 +1,20 @@
+@mixin autofill-reset() {
+  &:-webkit-autofill {
+    color: #fff2d9 !important;
+
+    background-color: transparent !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  &:-webkit-autofill::first-line {
+    color: #fff2d9 !important;
+  }
+
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}

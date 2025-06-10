@@ -1,0 +1,21 @@
+@mixin scroll-bar($size: 5px, $radius: 20px, $foreground, $background) {
+  // scrollbar-color: $foreground $background;
+
+  &::-webkit-scrollbar {
+    width: $size; /* Mostly for vertical scrollbars */
+    height: $size; /* Mostly for horizontal scrollbars */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /* Foreground */
+
+    background: $foreground;
+    border-radius: $radius;
+  }
+
+  &::-webkit-scrollbar-track {
+    /* Background */
+
+    background: $background;
+  }
+}

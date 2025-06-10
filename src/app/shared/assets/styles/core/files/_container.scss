@@ -1,0 +1,19 @@
+@use "breakpoints" as *;
+
+:root {
+  --app-container-width-xs: 90%;
+  --app-container-width-sm: 80%;
+  --app-container-max-width: 1600px;
+}
+
+@mixin container() {
+  display: block;
+  width: var(--app-container-width-xs);
+  max-width: var(--app-container-max-width);
+  margin-right: auto;
+  margin-left: auto;
+
+  @include min-sm {
+    width: var(--app-container-width-sm);
+  }
+}

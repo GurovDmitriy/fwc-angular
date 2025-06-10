@@ -1,0 +1,30 @@
+.layout-auth {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.layout-auth__inner {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  padding: 20px;
+}
+
+.layout-auth__content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.layout-auth__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.layout-auth__footer-copyright {
+  text-align: center;
+}

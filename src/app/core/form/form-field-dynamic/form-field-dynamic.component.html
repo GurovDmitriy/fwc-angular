@@ -1,0 +1,57 @@
+<nz-form-item [formGroup]="form()">
+  <nz-form-control [nzErrorTip]="errorMessage() || undefined">
+    <nz-input-group [nzPrefixIcon]="formMeta().icon">
+      @switch (formMeta().typeView) {
+        @case ("text") {
+          <input
+            type="text"
+            nz-input
+            [name]="formMeta().name"
+            [formControlName]="formMeta().name"
+            [placeholder]="formMeta().placeholder"
+          />
+        }
+
+        @case ("email") {
+          <input
+            type="email"
+            nz-input
+            [name]="formMeta().name"
+            [formControlName]="formMeta().name"
+            [placeholder]="formMeta().placeholder"
+          />
+        }
+
+        @case ("password") {
+          <input
+            autocomplete="on"
+            type="password"
+            nz-input
+            [name]="formMeta().name"
+            [formControlName]="formMeta().name"
+            [placeholder]="formMeta().placeholder"
+          />
+        }
+
+        @case ("textarea") {
+          <textarea
+            nz-input
+            [name]="formMeta().name"
+            [formControlName]="formMeta().name"
+            [placeholder]="formMeta().placeholder"
+          ></textarea>
+        }
+
+        @default {
+          <input
+            type="text"
+            nz-input
+            [name]="formMeta().name"
+            [formControlName]="formMeta().name"
+            [placeholder]="formMeta().placeholder"
+          />
+        }
+      }
+    </nz-input-group>
+  </nz-form-control>
+</nz-form-item>

@@ -1,0 +1,39 @@
+@let state = state$ | async;
+
+<div class="account-card">
+  <nz-card
+    class="contact-detail-card__inner"
+    [nzActions]="[actionEdit, actionBin, signOut]"
+  >
+    <nz-skeleton [nzLoading]="state?.status === 'pending'">
+      <nz-card-meta
+        [nzAvatar]="avatarTemplate"
+        [nzTitle]="state?.user?.id || ''"
+        [nzDescription]="state?.user?.email || ''"
+      ></nz-card-meta>
+    </nz-skeleton>
+  </nz-card>
+</div>
+
+<ng-template #avatarTemplate>
+  <nz-avatar nzSrc="icons/avatar-male.svg"></nz-avatar>
+</ng-template>
+<ng-template #actionEdit>
+  <nz-icon (click)="handleUpdate()" nzType="edit" />
+</ng-template>
+<ng-template #actionBin>
+  <nz-icon (click)="handleRemove()" nzType="delete" />
+</ng-template>
+<ng-template #signOut>
+  <button
+    nz-button
+    [nzType]="'primary'"
+    [nzLoading]="state?.status === 'pending'"
+    [disabled]="false"
+    type="button"
+    (click)="handleSignOut()"
+    [disabled]="state?.status === 'pending'"
+  >
+    signOut
+  </button>
+</ng-template>

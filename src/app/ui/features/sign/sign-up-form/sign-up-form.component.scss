@@ -1,0 +1,17 @@
+.card {
+  max-width: 600px;
+  margin: 0 auto;
+
+  border: var(--app-border);
+  border-radius: var(--app-panel-border-radius);
+}
+
+.button-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.error-message {
+  margin-bottom: 24px;
+}

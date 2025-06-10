@@ -1,0 +1,21 @@
+@mixin line-clamp($max: 5, $lh: 1.2em) {
+  --max-lines: $max;
+  --lh: $lh;
+
+  position: relative;
+
+  max-height: calc(var(--lh) * var(--max-lines));
+  overflow: hidden;
+
+  line-height: var(--lh);
+}
+
+@mixin line-clamp-native($max: 2) {
+  display: -webkit-box;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $max;
+  -webkit-box-orient: vertical;
+}

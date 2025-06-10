@@ -1,0 +1,49 @@
+<div class="sider-panel">
+  <div class="sider-panel__header">
+    <button
+      nz-button
+      nzType="text"
+      (click)="handleToggleMenu()"
+      class="sider-panel__btn-menu"
+    >
+      <nz-icon nzType="menu" nzTheme="outline" />
+    </button>
+  </div>
+  <ul
+    class="navigation-main"
+    nz-menu
+    nzMode="inline"
+    [nzInlineCollapsed]="isCollapsed()"
+  >
+    <li
+      nz-menu-item
+      class="navigation-main__list-item"
+      routerLink="/"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="home" nzTheme="outline" />
+      <span>home</span>
+    </li>
+    <li
+      nz-menu-item
+      class="navigation-main__list-item"
+      routerLink="/cart"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="shopping-cart" nzTheme="outline" />
+      <span>cart</span>
+    </li>
+    <li
+      nz-menu-item
+      class="navigation-main__list-item"
+      routerLink="/account"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="user" nzTheme="outline" />
+      <span>account</span>
+    </li>
+  </ul>
+</div>

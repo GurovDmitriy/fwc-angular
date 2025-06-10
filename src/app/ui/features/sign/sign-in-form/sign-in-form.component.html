@@ -1,0 +1,65 @@
+@let errorMessages = signIn.errorMessages$ | async;
+@let state = signIn.state$ | async;
+
+<div class="sign-in-form">
+  <nz-card class="sign-in-form__card" nzTitle="Sign In">
+    <form
+      nz-form
+      [formGroup]="signIn.form"
+      class="sign-in-form__form"
+      (ngSubmit)="handleAction('submit')"
+    >
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="errorMessages?.email">
+          <nz-input-group nzPrefixIcon="mail">
+            <input
+              type="email"
+              nz-input
+              formControlName="email"
+              placeholder="Email"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="errorMessages?.password">
+          <nz-input-group nzPrefixIcon="lock">
+            <input
+              type="password"
+              nz-input
+              formControlName="password"
+              placeholder="Password"
+              autocomplete
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-space nzDirection="vertical" nzSize="middle">
+        @if (state?.error) {
+          <div class="error-message" *nzSpaceItem>
+            <nz-alert
+              nzType="error"
+              [nzMessage]="state?.error?.message || null"
+            ></nz-alert>
+          </div>
+        }
+
+        <div class="button-box" *nzSpaceItem>
+          <button
+            nz-button
+            type="submit"
+            [nzType]="'primary'"
+            [nzLoading]="state?.status === 'pending' || signIn.form.pending"
+            [disabled]="!signIn.form.valid"
+          >
+            Sign In
+          </button>
+          or
+          <a routerLink="/sign-up">Sign Up</a>
+        </div>
+      </nz-space>
+    </form>
+  </nz-card>
+</div>

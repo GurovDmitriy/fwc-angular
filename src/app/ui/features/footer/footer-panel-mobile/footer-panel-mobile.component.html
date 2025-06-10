@@ -1,0 +1,36 @@
+<div class="footer-panel-mobile">
+  <ul
+    class="footer-panel-mobile__menu-list"
+    nz-menu
+    nzMode="horizontal"
+    [nzInlineCollapsed]="false"
+  >
+    <li
+      nz-menu-item
+      class="footer-panel-mobile__menu-list-item"
+      routerLink="/"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="calendar" nzTheme="outline" />
+    </li>
+    <li
+      nz-menu-item
+      class="footer-panel-mobile__menu-list-item"
+      routerLink="/contacts"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="contacts" nzTheme="outline" />
+    </li>
+    <li
+      nz-menu-item
+      class="footer-panel-mobile__menu-list-item"
+      routerLink="/settings"
+      [nzMatchRouter]="true"
+      [nzMatchRouterExact]="true"
+    >
+      <nz-icon nzType="setting" nzTheme="outline" />
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,21 @@
+.footer-panel-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 10px;
+
+  background-color: white;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-panel-border-radius);
+}
+
+.footer-panel-mobile__menu-list {
+  width: auto;
+  margin: 0 auto;
+
+  line-height: 56px;
+
+  border-bottom: none;
+}

@@ -1,0 +1,17 @@
+@use "sass:map";
+@use "breakpoints" as *;
+
+:root {
+  --app-space-xs: 4px;
+  --app-space-sm: 8px;
+
+  @include min-sm {
+    --app-space-xs: 6px;
+    --app-space-sm: 10px;
+  }
+
+  @include min-md {
+    --app-space-xs: 8px;
+    --app-space-sm: 12px;
+  }
+}

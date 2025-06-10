@@ -1,0 +1,154 @@
+/**
+ * **********************************
+ * Layout
+ * **********************************
+*/
+
+.layout-home {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/**
+ * **********************************
+ * Header Affix Mobile - Desktop
+ * **********************************
+*/
+
+.layout-home__header {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  background-color: transparent;
+}
+
+.layout-home__header-affix {
+  width: 100%;
+}
+
+.layout-home__header-resizer {
+  width: 100%;
+}
+
+.layout-home__header-inner {
+  padding: 10px;
+  padding-bottom: 20px;
+
+  background-image: linear-gradient(
+    180deg,
+    var(--app-main-background) 80%,
+    transparent
+  );
+}
+
+.layout-home__header-content {
+  width: 100%;
+}
+
+/**
+ * **********************************
+ * Sider Desktop
+ * **********************************
+*/
+
+.layout-home__sider {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: 100vh;
+  padding: 10px;
+  overflow: hidden;
+
+  background-color: transparent;
+
+  &--ghost {
+    border: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.layout-home__sider-container {
+  height: 100%;
+
+  background-color: var(--app-sider-background);
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-panel-border-radius);
+}
+
+/**
+ * **********************************
+ * Content
+ * **********************************
+*/
+
+.layout-home__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-home__content-inner {
+  flex-grow: 1;
+  padding: 10px;
+}
+
+/**
+ * **********************************
+ * Footer Panel
+ * **********************************
+*/
+
+.layout-home__footer {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.layout-home__footer-affix {
+  width: 100%;
+}
+
+.layout-home__footer-inner {
+  width: 100%;
+  overflow: hidden;
+}
+
+.layout-home__footer-container {
+  width: 100%;
+  padding: 10px;
+  padding-top: 20px;
+
+  background-image: linear-gradient(
+    0deg,
+    var(--app-main-background) 80%,
+    transparent
+  );
+}
+
+.layout-home__footer-container-desktop {
+  width: 100%;
+  padding: 10px;
+
+  background-color: var(--app-main-background);
+}
+
+/**
+ * **********************************
+ * Other
+ * **********************************
+*/
+
+.layout-home__button-menu {
+  margin-right: auto;
+
+  cursor: pointer;
+}
+
+.layout-home__logo {
+  height: 24px;
+  margin: 20px;
+}
