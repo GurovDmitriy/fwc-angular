@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "ng": "ng",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "start": "ng serve",
     "start:staging": "ng serve --configuration staging",
     "start:production": "ng serve --configuration production",
@@ -14,12 +14,14 @@
     "watch": "ng build --watch --configuration development",
     "preview": "npx http-server dist/fwc/browser --spa -a localhost -p 4200",
     "test": "vitest",
+    "test:bench": "vitest bench",
     "lint": "npm run lint:eslint && npm run lint:stylelint && npm run lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write \"**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts,css,scss,less,md,json,html}\" --ignore-path .prettierignore",
     "lint:stylelint": "stylelint --fix --allow-empty-input \"**/*.{css,less,scss}\" --ignore-path .stylelintignore",
     "husky": "npx husky",
-    "update": "ncu --interactive --format group"
+    "update": "ncu --interactive --format group",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -32,6 +34,7 @@
     "@angular/platform-browser": "^19.2.13",
     "@angular/platform-browser-dynamic": "^19.2.13",
     "@angular/router": "^19.2.13",
+    "@emotion/css": "^11.13.5",
     "@ng-web-apis/common": "^4.12.0",
     "@ng-web-apis/resize-observer": "^4.12.0",
     "@ngrx/effects": "^19.2.0",
@@ -40,6 +43,8 @@
     "angular-svg-icon": "^19.1.1",
     "immutable": "^5.1.2",
     "lodash": "^4.17.21",
+    "lowdb": "^7.0.1",
+    "nanoid": "^5.1.5",
     "ng-zorro-antd": "^19.2.1",
     "ramda": "^0.30.1",
     "rxjs": "~7.8.0",
@@ -52,13 +57,16 @@
     "@analogjs/platform": "^1.16.2",
     "@analogjs/vite-plugin-angular": "^1.16.2",
     "@analogjs/vitest-angular": "^1.16.2",
+    "@angular-devkit/build-angular": "^19.2.13",
     "@angular/build": "^19.2.14",
     "@angular/cli": "^19.2.13",
     "@angular/compiler-cli": "^19.2.13",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
+    "@faker-js/faker": "^9.8.0",
     "@ngx-env/builder": "^19.0.4",
     "@nx/vite": "^21.0.0",
+    "@playwright/test": "1.53.0",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.16",
     "@types/ramda": "^0.30.2",
@@ -72,6 +80,8 @@
     "less": "^4.2.0",
     "lint-staged": "^15.5.1",
     "miragejs": "^0.1.48",
+    "msw": "^2.10.2",
+    "playwright-ng-schematics": "^2.0.3",
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "stylelint": "^16.8.2",
@@ -92,5 +102,10 @@
   },
   "engines": {
     "node": "22.14.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

@@ -26,7 +26,7 @@ export class AuthSchema {
 
   private readonly meResponse = v.object({
     id: v.string(),
-    username: v.string(),
+    name: v.string(),
     email: v.string(),
   })
 
@@ -57,7 +57,7 @@ export class AuthSchema {
     v.transform((value) => {
       return {
         id: value.id,
-        username: value.username,
+        name: value.name,
         email: value.email,
       }
     }),

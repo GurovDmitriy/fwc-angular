@@ -39,8 +39,7 @@ export class ConfigRuntimeServiceBase implements ConfigRuntimeService {
   }
   private configSubject = new BehaviorSubject<ConfigRuntimeImm>(this.initConfig)
 
-  private url =
-    this.fileMap[this.envService.mode] || "/config-runtime.development.json"
+  private url = `${this.envService.appUrl || ""}${this.fileMap[this.envService.mode] || this.fileMap.development}`
 
   config$ = this.configSubject
     .asObservable()

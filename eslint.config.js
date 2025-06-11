@@ -5,7 +5,7 @@ const angular = require("angular-eslint")
 
 module.exports = tseslint.config(
   {
-    ignores: [".angular/**"],
+    ignores: [".angular/**", "public/mockServiceWorker.js"],
   },
   {
     files: ["**/*.ts"],

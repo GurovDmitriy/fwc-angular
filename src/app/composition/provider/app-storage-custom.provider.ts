@@ -9,7 +9,7 @@ import { StorageBase, TOKEN_STORAGE_CUSTOM } from "../../core/storage"
 export function appStorageCustomProvider(): Provider | EnvironmentProviders {
   return {
     provide: TOKEN_STORAGE_CUSTOM,
-    useClass: StorageBase,
+    useExisting: StorageBase,
   }
 }
 

@@ -4,6 +4,8 @@ import { LayoutAuthComponent } from "./layouts/layout-auth"
 import { LayoutHomeComponent } from "./layouts/layout-home"
 import { PageHomeComponent } from "./pages/page-home"
 import { PageNotFoundComponent } from "./pages/page-not-found"
+import { PageSignInComponent } from "./pages/page-sign-in"
+import { PageSignUpComponent } from "./pages/page-sign-up"
 
 export const routes: Routes = [
   {
@@ -25,6 +27,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import("./pages/page-account").then((c) => c.PageAccountComponent),
       },
+      {
+        path: "category/:categoryId",
+        loadComponent: () =>
+          import("./pages/page-category").then((c) => c.PageCategoryComponent),
+      },
+      {
+        path: "product/:productId",
+        loadComponent: () =>
+          import("./pages/page-product").then((c) => c.PageProductComponent),
+      },
     ],
   },
 
@@ -34,8 +46,7 @@ export const routes: Routes = [
     children: [
       {
         path: "sign-up",
-        loadComponent: () =>
-          import("./pages/page-sign-up").then((c) => c.PageSignUpComponent),
+        component: PageSignUpComponent,
       },
     ],
   },
@@ -46,8 +57,7 @@ export const routes: Routes = [
     children: [
       {
         path: "sign-in",
-        loadComponent: () =>
-          import("./pages/page-sign-in").then((c) => c.PageSignInComponent),
+        component: PageSignInComponent,
       },
     ],
   },

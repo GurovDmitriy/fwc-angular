@@ -1,0 +1,49 @@
+<div class="account-card">
+  <nz-card
+    class="contact-detail-card__inner"
+    [nzActions]="[actionEdit, actionBin, signOut]"
+  >
+    <nz-skeleton [nzLoading]="state().status === 'pending'">
+      <nz-card-meta
+        [nzAvatar]="avatarTemplate"
+        [nzTitle]="state().user.name"
+        [nzDescription]="state().user.email"
+      ></nz-card-meta>
+    </nz-skeleton>
+  </nz-card>
+</div>
+
+<ng-template #avatarTemplate>
+  <nz-avatar nzSrc="icons/avatar-male.svg"></nz-avatar>
+</ng-template>
+
+<ng-template #actionEdit>
+  <button nz-button nzType="text" type="button" (click)="handleUpdate()">
+    <nz-icon nzType="edit" />
+  </button>
+</ng-template>
+
+<ng-template #actionBin>
+  <button
+    nz-button
+    nzType="text"
+    type="button"
+    [disabled]="true"
+    (click)="handleRemove()"
+  >
+    <nz-icon nzType="delete" />
+  </button>
+</ng-template>
+
+<ng-template #signOut>
+  <button
+    nz-button
+    nzType="primary"
+    [nzLoading]="state().status === 'pending'"
+    type="button"
+    (click)="handleSignOut()"
+    [disabled]="state().status === 'pending'"
+  >
+    signOut
+  </button>
+</ng-template>

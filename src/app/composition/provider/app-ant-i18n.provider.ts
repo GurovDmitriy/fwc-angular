@@ -4,7 +4,7 @@ import {
   LOCALE_ID,
   Provider,
 } from "@angular/core"
-import { en_US, NZ_I18N, ru_RU } from "ng-zorro-antd/i18n"
+import { en_US, NZ_I18N } from "ng-zorro-antd/i18n"
 
 export function appAntI18nProvider(): Provider | EnvironmentProviders {
   return {
@@ -14,8 +14,6 @@ export function appAntI18nProvider(): Provider | EnvironmentProviders {
       switch (localId) {
         case "en":
           return en_US
-        case "ru":
-          return ru_RU
         default:
           return en_US
       }

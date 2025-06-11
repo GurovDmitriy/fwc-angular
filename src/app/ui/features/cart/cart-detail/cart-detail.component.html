@@ -1,0 +1,53 @@
+@let status = status$ | async;
+@let list = list$ | async;
+
+<nz-list class="list">
+  @if (list?.list) {
+    @for (item of list?.list; track item.productId) {
+      <nz-list-item>
+        <ng-container>
+          <nz-list-item-meta
+            [nzAvatar]="'images/' + item.product.image"
+            [nzTitle]="item.product.name"
+            [nzDescription]="item.product.price"
+          >
+          </nz-list-item-meta>
+          <ul nz-list-item-actions>
+            <nz-list-item-action
+              >count: {{ item.quantity }}</nz-list-item-action
+            >
+            <nz-list-item-action>sum: {{ item.sum }}</nz-list-item-action>
+            <nz-list-item-action>
+              <button
+                nz-button
+                nzType="default"
+                (click)="handleAdd(item.productId)"
+                [nzLoading]="status?.add === 'pending'"
+                [disabled]="status?.remove === 'pending'"
+              >
+                <nz-icon nzType="plus" />
+              </button>
+            </nz-list-item-action>
+            <nz-list-item-action>
+              <button
+                nz-button
+                nzType="default"
+                (click)="handleRemove(item.productId)"
+                [nzLoading]="status?.remove === 'pending'"
+                [disabled]="status?.add === 'pending'"
+              >
+                <nz-icon nzType="minus" />
+              </button>
+            </nz-list-item-action>
+          </ul>
+        </ng-container>
+      </nz-list-item>
+    }
+
+    <nz-alert
+      nzType="success"
+      nzMessage="Total"
+      nzAction="{{ list?.total }}"
+    ></nz-alert>
+  }
+</nz-list>

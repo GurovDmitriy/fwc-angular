@@ -2,8 +2,8 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms"
 import * as R from "ramda"
 
 export function formSameAsValidator(
-  nameFiledMatching: string,
   nameFieldCurrent: string,
+  nameFiledMatching: string,
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const filedMatching = control.get(nameFiledMatching)
@@ -12,22 +12,21 @@ export function formSameAsValidator(
     if (!filedMatching || !fieldCurrent) return null
 
     const customError = {
-      customSameAs: {
-        filedMatching: nameFiledMatching,
-        fieldCurrent: nameFieldCurrent,
+      [nameFieldCurrent]: {
+        customSameAs: {
+          fieldCurrent: nameFieldCurrent,
+          filedMatching: nameFiledMatching,
+        },
       },
     }
 
-    const errorsCurrent = fieldCurrent.errors
-
     if (
-      R.all(R.isNotEmpty)([filedMatching.value, fieldCurrent.value]) &&
+      R.isNotEmpty(filedMatching.value) &&
+      R.isNotEmpty(fieldCurrent.value) &&
       R.complement(R.equals)(filedMatching.value, fieldCurrent.value)
     ) {
       return customError
     } else {
-      if (R.isNil(errorsCurrent)) return null
-
       return null
     }
   }

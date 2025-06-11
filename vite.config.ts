@@ -25,6 +25,9 @@ export default defineConfig(({ mode }) => ({
     environment: "jsdom",
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     reporters: ["default"],
+    benchmark: {
+      include: ["src/**/*.bench.ts"],
+    },
   },
   define: {
     "import.meta.vitest": mode !== "production",

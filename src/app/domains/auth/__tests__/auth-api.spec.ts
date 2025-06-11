@@ -8,6 +8,7 @@ import { firstValueFrom } from "rxjs"
 import { afterEach, beforeEach, describe, expect, it, test, vi } from "vitest"
 import { appEnvServiceProvider } from "../../../composition/provider"
 import { Environment, TOKEN_ENV } from "../../../configuration/env"
+import { HttpCache } from "../../../core/http/http-cache"
 import { AuthApiService, AuthSchema } from "../internal"
 import {
   AuthSignInPayload,
@@ -17,24 +18,27 @@ import {
 } from "../types"
 
 describe("AuthApiService", () => {
-  let authApiService: AuthApiService
+  let apiService: AuthApiService
 
   let envService: Environment
   let httpTesting: HttpTestingController
-
-  let spyAuthSchema: {
-    signUp: ReturnType<typeof vi.fn>
-    signIn: ReturnType<typeof vi.fn>
-    tokenRefresh: ReturnType<typeof vi.fn>
-    me: ReturnType<typeof vi.fn>
-  }
+  let spySchema: Record<keyof AuthSchema, ReturnType<typeof vi.fn>>
+  let spyHttpCache: Record<keyof HttpCache, any>
 
   beforeEach(() => {
-    spyAuthSchema = {
+    const authSchema = {
       signUp: vi.fn().mockImplementation((arg) => arg),
       signIn: vi.fn().mockImplementation((arg) => arg),
       tokenRefresh: vi.fn().mockImplementation((arg) => arg),
       me: vi.fn().mockImplementation((arg) => arg),
+    }
+
+    const httpCache = {
+      cacheKey: "CacheKey",
+      resetKey: "ResetKey",
+      connect: vi.fn().mockImplementation((arg) => arg),
+      setCtxCacheKey: vi.fn().mockImplementation((arg) => arg),
+      setCtxResetKey: vi.fn().mockImplementation((arg) => arg),
     }
 
     TestBed.configureTestingModule({
@@ -45,14 +49,28 @@ describe("AuthApiService", () => {
         appEnvServiceProvider(),
         {
           provide: AuthSchema,
-          useValue: spyAuthSchema,
+          useValue: authSchema,
+        },
+        {
+          provide: HttpCache,
+          useValue: httpCache,
         },
       ],
     })
 
-    authApiService = TestBed.inject(AuthApiService)
+    spySchema = TestBed.inject(AuthSchema) as unknown as Record<
+      keyof AuthSchema,
+      ReturnType<typeof vi.fn>
+    >
+    spyHttpCache = TestBed.inject(HttpCache) as unknown as Record<
+      keyof HttpCache,
+      any
+    >
+
     envService = TestBed.inject(TOKEN_ENV)
     httpTesting = TestBed.inject(HttpTestingController)
+
+    apiService = TestBed.inject(AuthApiService)
   })
 
   afterEach(() => {
@@ -64,10 +82,10 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-up`
       const mockPayload: AuthSignUpPayload = {
-        username: "username",
+        name: "name",
         email: "username@gmail.com",
         password: "1234",
-        passwordConfirmation: "1234",
+        passwordConfirm: "1234",
       }
 
       const mockToken: AuthSignToken = {
@@ -76,7 +94,7 @@ describe("AuthApiService", () => {
         tokenRefresh: "abc",
       }
 
-      const query$ = authApiService.signUp(mockPayload)
+      const query$ = apiService.signUp(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -97,10 +115,10 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-up`
       const mockPayload: AuthSignUpPayload = {
-        username: "username",
+        name: "name",
         email: "username@gmail.com",
         password: "1234",
-        passwordConfirmation: "1234",
+        passwordConfirm: "1234",
       }
 
       const mockToken: AuthSignToken = {
@@ -109,11 +127,11 @@ describe("AuthApiService", () => {
         tokenRefresh: "abc",
       }
 
-      spyAuthSchema.signUp.mockImplementation(() => {
+      spySchema.signUp.mockImplementation(() => {
         throw new Error("Error Schema")
       })
 
-      const query$ = authApiService.signUp(mockPayload)
+      const query$ = apiService.signUp(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -128,13 +146,13 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-up`
       const mockPayload: AuthSignUpPayload = {
-        username: "username",
+        name: "name",
         email: "username@gmail.com",
         password: "1234",
-        passwordConfirmation: "1234",
+        passwordConfirm: "1234",
       }
 
-      const query$ = authApiService.signUp(mockPayload)
+      const query$ = apiService.signUp(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -149,13 +167,13 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-up`
       const mockPayload: AuthSignUpPayload = {
-        username: "username",
+        name: "name",
         email: "username@gmail.com",
         password: "1234",
-        passwordConfirmation: "1234",
+        passwordConfirm: "1234",
       }
 
-      const query$ = authApiService.signUp(mockPayload)
+      const query$ = apiService.signUp(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -182,7 +200,7 @@ describe("AuthApiService", () => {
         tokenRefresh: "abc",
       }
 
-      const query$ = authApiService.signIn(mockPayload)
+      const query$ = apiService.signIn(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -213,11 +231,11 @@ describe("AuthApiService", () => {
         tokenRefresh: "abc",
       }
 
-      spyAuthSchema.signIn.mockImplementation(() => {
+      spySchema.signIn.mockImplementation(() => {
         throw new Error("Error Schema")
       })
 
-      const query$ = authApiService.signIn(mockPayload)
+      const query$ = apiService.signIn(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -236,7 +254,7 @@ describe("AuthApiService", () => {
         password: "1234",
       }
 
-      const query$ = authApiService.signIn(mockPayload)
+      const query$ = apiService.signIn(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -255,7 +273,7 @@ describe("AuthApiService", () => {
         password: "1234",
       }
 
-      const query$ = authApiService.signIn(mockPayload)
+      const query$ = apiService.signIn(mockPayload)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -272,7 +290,7 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-out`
       const mockReturnData = {}
-      const query$ = authApiService.signOut()
+      const query$ = apiService.signOut()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -291,7 +309,7 @@ describe("AuthApiService", () => {
     it("signOut should throw HttpError", async () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-out`
-      const query$ = authApiService.signOut()
+      const query$ = apiService.signOut()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -305,7 +323,7 @@ describe("AuthApiService", () => {
     it("signOut should throw ProgressEvent", async () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/sign-out`
-      const query$ = authApiService.signOut()
+      const query$ = apiService.signOut()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -329,7 +347,7 @@ describe("AuthApiService", () => {
         tokenRefresh: "abc",
       }
 
-      const query$ = authApiService.tokenRefresh(mockRefreshToken)
+      const query$ = apiService.tokenRefresh(mockRefreshToken)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -350,7 +368,7 @@ describe("AuthApiService", () => {
       const url = `${envService.apiUrl}/auth/refresh`
       const mockRefreshToken = "123abc"
 
-      const query$ = authApiService.tokenRefresh(mockRefreshToken)
+      const query$ = apiService.tokenRefresh(mockRefreshToken)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -365,7 +383,7 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/refresh`
       const mockRefreshToken = "123abc"
-      const query$ = authApiService.tokenRefresh(mockRefreshToken)
+      const query$ = apiService.tokenRefresh(mockRefreshToken)
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -383,11 +401,11 @@ describe("AuthApiService", () => {
       const url = `${envService.apiUrl}/auth/me`
       const mockUser: AuthUser = {
         id: "123",
-        username: "username",
+        name: "name",
         email: "email@gmail.com",
       }
 
-      const query$ = authApiService.me()
+      const query$ = apiService.me()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -409,15 +427,15 @@ describe("AuthApiService", () => {
       const url = `${envService.apiUrl}/auth/me`
       const mockUser: AuthUser = {
         id: "123",
-        username: "username",
+        name: "name",
         email: "email@gmail.com",
       }
 
-      spyAuthSchema.me.mockImplementation(() => {
+      spySchema.me.mockImplementation(() => {
         throw new Error("Error Schema")
       })
 
-      const query$ = authApiService.me()
+      const query$ = apiService.me()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -432,7 +450,7 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/me`
 
-      const query$ = authApiService.me()
+      const query$ = apiService.me()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -447,7 +465,7 @@ describe("AuthApiService", () => {
       // Arrange
       const url = `${envService.apiUrl}/auth/me`
 
-      const query$ = authApiService.me()
+      const query$ = apiService.me()
 
       // Act
       const queryPromise = firstValueFrom(query$)
@@ -456,6 +474,41 @@ describe("AuthApiService", () => {
 
       // Assert
       await expect(queryPromise).rejects.toThrow()
+    })
+  })
+
+  describe("meUpdate", () => {
+    test("meUpdate create correct POST request", async () => {
+      // Arrange
+      const url = `${envService.apiUrl}/auth/me-update`
+
+      const mockUser: AuthUser = {
+        id: "123",
+        name: "name",
+        email: "email@gmail.com",
+      }
+
+      const mockUserPayload: AuthUser = {
+        name: "name",
+      } as any
+
+      spyHttpCache.setKeyCacheResetCtx.mockImplementation((args: any) => args)
+
+      const query$ = apiService.meUpdate(mockUserPayload)
+
+      // Act
+      const queryPromise = firstValueFrom(query$)
+      const req = httpTesting.expectOne(url)
+
+      // Assert (HTTP request)
+      expect(req.request.method).toBe("POST")
+
+      // Act (HTTP response)
+      req.flush(mockUser)
+
+      // Assert (result)
+      expect(spyHttpCache.setKeyCacheResetCtx).toBeCalledTimes(1)
+      expect(await queryPromise).toEqual(mockUser)
     })
   })
 })

@@ -1,7 +1,7 @@
 import { catchError, defer, map, Observable, of, startWith } from "rxjs"
 
 export function httpWrapWithStatus<TData = any, TError = any>(
-  condition: () => boolean,
+  condition: () => boolean = () => true,
 ) {
   return (
     observable: Observable<TData>,

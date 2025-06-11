@@ -1,0 +1,13 @@
+###############
+# create env files:
+# .env.development
+# .env.production
+# .env.staging
+# .env.testing
+#
+# with values like
+#
+# NG_APP_URL=https://localhost:4200
+# NG_APP_API_URL=https://jsonplaceholder.typicode.com
+###############
+

@@ -54,7 +54,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "1000kB",
-                  "maximumError": "2MB"
+                  "maximumError": "6MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -140,6 +140,17 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "fwc:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "fwc:serve:production"
+            }
           }
         }
       }

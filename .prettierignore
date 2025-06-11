@@ -307,3 +307,6 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+
+# user
+public/mockServiceWorker.js

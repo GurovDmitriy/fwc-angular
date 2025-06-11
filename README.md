@@ -2,7 +2,7 @@
 FWC Angular
 </h1>
 <p align="center">
-Fantasy world clone Angular - Shopping Cart
+Fantasy World Clone with Angular - Shopping Cart 
 <p>
 
 <br>

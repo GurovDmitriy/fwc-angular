@@ -11,36 +11,42 @@ $map-breakpoints: (
 
 :root {
   @each $key, $value in $map-breakpoints {
-    --app-breakpoint-#{$key}: $value;
+    --app-breakpoint-#{$key}: #{$value};
+  }
+}
+
+@mixin min-xs {
+  @media (min-width: map.get($map-breakpoints, "xs")) {
+    @content;
   }
 }
 
 @mixin min-sm {
-  @media (min-width: var(--app-breakpoint-sm)) {
+  @media (min-width: map.get($map-breakpoints, "sm")) {
     @content;
   }
 }
 
 @mixin min-md {
-  @media (min-width: var(--app-breakpoint-md)) {
+  @media (min-width: map.get($map-breakpoints, "md")) {
     @content;
   }
 }
 
 @mixin min-lg {
-  @media (min-width: var(--app-breakpoint-lg)) {
+  @media (min-width: map.get($map-breakpoints, "lg")) {
     @content;
   }
 }
 
 @mixin min-xl {
-  @media (min-width: var(--app-breakpoint-xl)) {
+  @media (min-width: map.get($map-breakpoints, "xl")) {
     @content;
   }
 }
 
 @mixin min-xxl {
-  @media (min-width: var(--app-breakpoint-xxl)) {
+  @media (min-width: map.get($map-breakpoints, "xxl")) {
     @content;
   }
 }

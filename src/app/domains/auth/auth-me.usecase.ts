@@ -1,8 +1,17 @@
 import { inject, Injectable } from "@angular/core"
 
 import { Store } from "@ngrx/store"
-import { map, startWith, tap } from "rxjs"
+import { Observable } from "rxjs"
+import { ErrorMapped } from "../../core/error"
+import { StatusName } from "../../core/status"
 import { AuthBaseFeature } from "./auth-base.store"
+import { AuthUser } from "./types"
+
+export interface AuthMeUsecaseState {
+  status: StatusName
+  user: AuthUser | null
+  error: ErrorMapped | null
+}
 
 @Injectable({
   providedIn: "any",
@@ -10,22 +19,8 @@ import { AuthBaseFeature } from "./auth-base.store"
 export class AuthMeUsecase {
   private store = inject(Store)
 
-  state$ = this.store.select(AuthBaseFeature.selectAuthState).pipe(
-    tap((state) => {
-      console.log(123, state)
-    }),
-    map((state) => {
-      return {
-        status: state.status,
-        user: state.user,
-        error: state.error,
-      }
-    }),
-    startWith({
-      status: "useless",
-      user: null,
-      error: null,
-    }),
+  state$: Observable<AuthMeUsecaseState> = this.store.select(
+    AuthBaseFeature.selectAuthState,
   )
 
   constructor() {}

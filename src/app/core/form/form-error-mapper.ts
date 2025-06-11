@@ -20,32 +20,70 @@ import { map, Observable } from "rxjs"
  */
 export function formErrorMapper<
   TFormGroup extends FormGroup,
-  TErrorMap extends Record<string, any>,
->(formGroup: TFormGroup, errorMap: TErrorMap) {
+  TErrorFieldMap extends Record<string, any>,
+  TErrorFormMap extends Record<string, any>,
+>(
+  formGroup: TFormGroup,
+  errorFieldMap: TErrorFieldMap,
+  errorFormMap?: TErrorFormMap,
+) {
   return (
     observable: Observable<any>,
-  ): Observable<Record<keyof TErrorMap, string>> => {
-    return new Observable<Record<keyof TErrorMap, string>>((subscriber) => {
+  ): Observable<{
+    field: Record<keyof TErrorFieldMap, string> | null
+    form: Record<keyof TErrorFormMap, string> | null
+  }> => {
+    return new Observable<{
+      field: Record<keyof TErrorFieldMap, string> | null
+      form: Record<keyof TErrorFormMap, string> | null
+    }>((subscriber) => {
       const subscription = observable.subscribe({
         next() {
-          const _newValue = Object.entries(formGroup.controls).reduce(
+          const _field = Object.entries(formGroup.controls).reduce(
             (prev, next: any) => {
               return {
                 ...prev,
-                [next[0]]: !(errorMap[next[0]] && next[1].errors)
+                [next[0]]: !(errorFieldMap[next[0]] && next[1].errors)
                   ? ""
                   : Object.entries(next[1].errors)
                       .reduce<string[]>((messages, [errorKey, errorValue]) => {
-                        messages.push(errorMap[next[0]][errorKey](errorValue))
+                        messages.push(
+                          errorFieldMap[next[0]][errorKey](errorValue),
+                        )
                         return messages
                       }, [])
                       .join(", "),
               }
             },
             {},
-          )
+          ) as any
 
-          subscriber.next(_newValue as any)
+          const _form =
+            formGroup.errors && errorFormMap
+              ? (Object.entries(formGroup.errors).reduce((prev, next: any) => {
+                  return {
+                    ...prev,
+                    [next[0]]: !(errorFormMap[next[0]] && next[1])
+                      ? ""
+                      : Object.entries(next[1])
+                          .reduce<string[]>(
+                            (messages, [errorKey, errorValue]) => {
+                              messages.push(
+                                errorFormMap[next[0]][errorKey](errorValue),
+                              )
+                              return messages
+                            },
+                            [],
+                          )
+                          .join(", "),
+                  }
+                }, {}) as any)
+              : null
+
+          subscriber.next({
+            field: _field,
+            form: _form,
+          } as any)
         },
         error(error: any) {
           subscriber.error(error)

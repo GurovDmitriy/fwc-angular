@@ -1,8 +1,17 @@
 <div class="page-settings">
+  <h2 nz-typography>Account</h2>
   <div nz-row [nzGutter]="16">
-    <div nz-col class="gutter-row" [nzSpan]="24">
-      <h2 nz-typography>Account</h2>
-      <app-account-card></app-account-card>
+    <div
+      nz-col
+      class="gutter-row"
+      [nzXs]="24"
+      [nzSm]="18"
+      [nzMd]="16"
+      [nzLg]="12"
+      [nzXl]="10"
+      [nzXXl]="6"
+    >
+      <app-account-card-container></app-account-card-container>
     </div>
   </div>
 </div>

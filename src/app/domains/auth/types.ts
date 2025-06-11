@@ -1,13 +1,17 @@
 export interface AuthSignUpPayload {
-  username: string
   email: string
+  name: string
   password: string
-  passwordConfirmation: string
+  passwordConfirm: string
 }
 
 export interface AuthSignInPayload {
   email: string
   password: string
+}
+
+export interface AuthMeUpdatePayload {
+  email: string
 }
 
 export interface AuthSignToken {
@@ -18,7 +22,7 @@ export interface AuthSignToken {
 
 export interface AuthUser {
   id: string
-  username: string
+  name: string
   email: string
 }
 

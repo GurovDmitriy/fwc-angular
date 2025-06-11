@@ -2,10 +2,6 @@ import { Inject, Injectable } from "@angular/core"
 import { filter, Subject, takeUntil, tap } from "rxjs"
 import { ErrorService, TOKEN_ERROR_SERVICE } from "../../core/error"
 
-/**
- * - Report error only
- * TODO: token for destroy?
- */
 @Injectable()
 export class ErrorReporter {
   private unsubscribe = new Subject<void>()

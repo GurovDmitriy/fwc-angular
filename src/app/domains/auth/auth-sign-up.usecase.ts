@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core"
 
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { Store } from "@ngrx/store"
-import { BehaviorSubject, filter, Observable, tap } from "rxjs"
+import { BehaviorSubject, filter, Observable } from "rxjs"
 import {
   formErrorMapper,
   FormFieldMeta,
@@ -18,28 +18,15 @@ import { AuthEmailValidator } from "./internal/auth-email.validator"
 import { AuthSignUpPayload } from "./types"
 
 export interface AuthSignUpForm {
-  username: FormControl<string | null>
+  name: FormControl<string | null>
   email: FormControl<string | null>
   password: FormControl<string | null>
-  passwordConfirmation: FormControl<string | null>
+  passwordConfirm: FormControl<string | null>
   about?: FormControl<string | null>
 }
 
-/**
- * Handler for dispatch action signUp
- *
- * Form fields provide field to ui
- * Form validation - field validation errors
- * Processing state - like a pending and success
- * Errors - client and backend errors
- * Confirm password validation from client form
- * Email check async validation from backend
- * Cross fields validation from client form like a name should not equal password
- * Dynamic from builder with toggle about field
- * TODO: add test
- */
 @Injectable({
-  providedIn: "root",
+  providedIn: "any",
 })
 export class AuthSignUpUsecase {
   private store = inject(Store)
@@ -48,7 +35,7 @@ export class AuthSignUpUsecase {
 
   form: FormGroup<AuthSignUpForm> = this.formBuilder.group(
     {
-      username: ["", [Validators.required]],
+      name: ["", [Validators.required]],
       email: [
         "",
         {
@@ -67,7 +54,7 @@ export class AuthSignUpUsecase {
           Validators.maxLength(50),
         ],
       ],
-      passwordConfirmation: [
+      passwordConfirm: [
         "",
         [
           Validators.required,
@@ -77,43 +64,52 @@ export class AuthSignUpUsecase {
       ],
     },
     {
-      validators: [formSameAsValidator("password", "passwordConfirmation")],
+      validators: [formSameAsValidator("passwordConfirm", "password")],
     },
   ) as FormGroup<AuthSignUpForm>
 
   errorMessages$ = this.form.statusChanges.pipe(
-    tap(() => console.log(this.form)),
-    formErrorMapper(this.form, {
-      username: {
-        required: () => "field is required",
-      },
+    formErrorMapper(
+      this.form,
+      {
+        name: {
+          required: () => "field is required",
+        },
 
-      email: {
-        required: () => "field is required",
-        email: () => "email format is invalid",
-        customExistEmail: () => "email is already exist",
-      },
+        email: {
+          required: () => "field is required",
+          email: () => "email format is invalid",
+          customExistEmail: () => "email is already exist",
+        },
 
-      password: {
-        required: () => "field is required",
-        minlength: (params: any) => `minimum ${params.requiredLength} symbols`,
-        maxlength: () => "character limit exceeded",
-      },
+        password: {
+          required: () => "field is required",
+          minlength: (params: any) =>
+            `minimum ${params.requiredLength} symbols`,
+          maxlength: () => "character limit exceeded",
+        },
 
-      passwordConfirmation: {
-        required: () => "field is required",
-        minlength: (params: any) => `minimum ${params.requiredLength} symbols`,
-        maxlength: () => "character limit exceeded",
-        customSameAs: (params: any) =>
-          `${params.fieldCurrent} should be same as ${params.filedMatching}`,
-      },
+        passwordConfirm: {
+          required: () => "field is required",
+          minlength: (params: any) =>
+            `minimum ${params.requiredLength} symbols`,
+          maxlength: () => "character limit exceeded",
+        },
 
-      about: {
-        required: () => "field is required",
-        minlength: (params: any) => `minimum ${params.requiredLength} symbols`,
-        maxlength: () => "character limit exceeded",
+        about: {
+          required: () => "field is required",
+          minlength: (params: any) =>
+            `minimum ${params.requiredLength} symbols`,
+          maxlength: () => "character limit exceeded",
+        },
       },
-    } satisfies Record<keyof AuthSignUpForm, any>),
+      {
+        passwordConfirm: {
+          customSameAs: (params: any) =>
+            `${params.fieldCurrent} should be same as ${params.filedMatching}`,
+        },
+      },
+    ),
   )
 
   private formMetaSubject = new BehaviorSubject<
@@ -121,8 +117,8 @@ export class AuthSignUpUsecase {
   >([
     {
       typeView: "text",
-      name: "username",
-      placeholder: "Username",
+      name: "name",
+      placeholder: "Name",
       icon: "user",
     },
     {
@@ -139,7 +135,7 @@ export class AuthSignUpUsecase {
     },
     {
       typeView: "password",
-      name: "passwordConfirmation",
+      name: "passwordConfirm",
       placeholder: "Confirm password",
       icon: "lock",
     },
@@ -194,9 +190,5 @@ export class AuthSignUpUsecase {
         ...this.formMetaSubject.getValue().filter((m) => m.name !== "about"),
       ])
     }
-  }
-
-  destroy() {
-    this.form.reset()
   }
 }

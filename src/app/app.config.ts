@@ -11,8 +11,6 @@ import { provideRouter } from "@angular/router"
 import { provideAngularSvgIcon } from "angular-svg-icon"
 import {
   appAntI18nProvider,
-  appAuthBaseInitializer,
-  appAuthBaseProvider,
   appConfigRuntimeInitializer,
   appConfigRuntimeProvider,
   appEnvServiceProvider,
@@ -26,6 +24,8 @@ import {
   appMediaQueryProvider,
   appStorageCustomInitializer,
   appStorageCustomProvider,
+  appStoreInitializer,
+  appStoreProvider,
 } from "./composition/provider"
 import { routes } from "./routing/app.routes"
 
@@ -52,7 +52,7 @@ export const appConfig: ApplicationConfig = {
     appStorageCustomProvider(),
     appStorageCustomInitializer(),
     appAntI18nProvider(),
-    appAuthBaseProvider(),
-    appAuthBaseInitializer(),
+    appStoreProvider(),
+    appStoreInitializer(),
   ],
 }

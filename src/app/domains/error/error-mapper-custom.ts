@@ -8,9 +8,6 @@ import {
 } from "../../core/error"
 import { ERROR_MAPPED_CODE } from "./types"
 
-/**
- * - Map error to custom code
- */
 @Injectable({
   providedIn: "root",
 })

@@ -1,5 +1,5 @@
-import { AsyncPipe } from "@angular/common"
-import { Component, inject, OnDestroy } from "@angular/core"
+import { AsyncPipe, KeyValuePipe } from "@angular/common"
+import { Component, DestroyRef, inject, OnInit } from "@angular/core"
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop"
 import { ReactiveFormsModule } from "@angular/forms"
 import { RouterLink } from "@angular/router"
@@ -28,14 +28,17 @@ type Action = "submit"
     NzAlertComponent,
     AsyncPipe,
     FormFieldDynamicComponent,
+    KeyValuePipe,
   ],
+  providers: [AuthSignUpUsecase],
   templateUrl: "./sign-up-form.component.html",
   styleUrl: "./sign-up-form.component.scss",
   standalone: true,
 })
-export class SignUpFormComponent implements OnDestroy {
+export class SignUpFormComponent implements OnInit {
   private actionSubject = new Subject<Action>()
   private action$ = this.actionSubject.asObservable()
+  private destroyRef = inject(DestroyRef)
 
   private signUpAction$ = this.action$.pipe(
     filter((action) => action === "submit"),
@@ -46,17 +49,13 @@ export class SignUpFormComponent implements OnDestroy {
 
   signUp = inject(AuthSignUpUsecase)
 
-  constructor() {
-    this.signUpAction$.pipe(takeUntilDestroyed()).subscribe()
+  constructor() {}
+
+  ngOnInit() {
+    this.signUpAction$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe()
   }
 
   handleAction(action: Action) {
     this.actionSubject.next(action)
   }
-
-  ngOnDestroy() {
-    this.signUp.destroy()
-  }
-
-  protected readonly Object = Object
 }

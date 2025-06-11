@@ -11,18 +11,8 @@ import {
 } from "./auth-base.store"
 import { AuthSignInPayload } from "./types"
 
-/**
- * Handler for dispatch action signIn
- *
- * Form fields provide field to ui
- * Form validation - field validation errors
- * Processing state - like a pending and success
- * Errors - client and backend errors
- * TODO: add test
- * TODO: includes("[Auth] signIn" to constant?
- */
 @Injectable({
-  providedIn: "root",
+  providedIn: "any",
 })
 export class AuthSignInUsecase {
   private store = inject(Store)
@@ -48,7 +38,7 @@ export class AuthSignInUsecase {
         minlength: (params: any) => `minimum ${params.requiredLength} symbols`,
         maxlength: () => "character limit exceeded",
       },
-    } satisfies Record<keyof AuthSignInPayload, any>),
+    }),
   )
 
   state$: Observable<AuthBaseState> = this.store
@@ -65,9 +55,5 @@ export class AuthSignInUsecase {
         payload: { ...(this.form.value as AuthSignInPayload) },
       }),
     )
-  }
-
-  destroy() {
-    this.form.reset()
   }
 }

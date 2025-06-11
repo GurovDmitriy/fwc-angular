@@ -22,8 +22,10 @@ import {
   of,
 } from "rxjs"
 import { ErrorMapped, TOKEN_ERROR_SERVICE } from "../../core/error"
+import { StatusName } from "../../core/status"
 import { AuthApiService, AuthStorageService } from "./internal"
 import {
+  AuthMeUpdatePayload,
   AuthSignInPayload,
   AuthSignToken,
   AuthSignUpPayload,
@@ -41,9 +43,6 @@ const AUTH_FILTER_NAME = {
   signTokenRefresh: "[Auth] tokenRefresh",
 }
 
-/**
- * Action like {type: "[Auth] signUp", payload: SomePayloadType}
- */
 const AuthBaseActions = createActionGroup({
   source: "Auth",
   events: {
@@ -63,16 +62,18 @@ const AuthBaseActions = createActionGroup({
     meSuccess: payloadProps<AuthUser>(),
     meFailure: errorProps(),
 
+    meUpdate: payloadProps<AuthMeUpdatePayload>(),
+    meUpdateSuccess: payloadProps<AuthUser>(),
+    meUpdateFailure: errorProps(),
+
     tokenRefresh: emptyProps(),
     tokenRefreshSuccess: payloadProps<AuthSignToken>(),
     tokenRefreshFailure: errorProps(),
   },
 })
 
-type AuthBaseStatusName = "useless" | "pending" | "success" | "failure"
-
 interface AuthBaseState {
-  status: AuthBaseStatusName
+  status: StatusName
   statusIs: {
     useless: boolean
     pending: boolean
@@ -101,12 +102,6 @@ const initialState: AuthBaseState = {
   error: null,
 }
 
-/**
- * Name reducer like "auth"
- * Reducer for state mutation
- * Selectors from box for any property from initialState
- * Define extraSelectors
- */
 const AuthBaseFeature = createFeature({
   name: "auth",
   reducer: createReducer(
@@ -250,6 +245,40 @@ const AuthBaseFeature = createFeature({
     ),
 
     on(
+      AuthBaseActions.meUpdate,
+      (state, action) =>
+        ({
+          ...state,
+          ...statusHelper("pending", action),
+          error: null,
+        }) satisfies AuthBaseState,
+    ),
+
+    on(
+      AuthBaseActions.meUpdateSuccess,
+      (state, action) =>
+        ({
+          ...state,
+          ...statusHelper("success", action),
+          user: action.payload,
+          isAuth: true,
+          error: null,
+        }) satisfies AuthBaseState,
+    ),
+
+    on(
+      AuthBaseActions.meUpdateFailure,
+      (state, action) =>
+        ({
+          ...state,
+          ...statusHelper("failure", action),
+          isAuth: false,
+          user: null,
+          error: action.error,
+        }) satisfies AuthBaseState,
+    ),
+
+    on(
       AuthBaseActions.tokenRefresh,
       (state, action) =>
         ({
@@ -296,14 +325,6 @@ class AuthBaseEffects {
 
   private actions$ = inject(Actions)
 
-  /**
-   * Subscribe to action
-   * Call to api signUp
-   * Save token to storage
-   * Remove token if error
-   * Call to api me for fill user
-   * Handler state projecting to main state auth
-   */
   signUp$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthBaseActions.signUp),
@@ -328,14 +349,6 @@ class AuthBaseEffects {
     ),
   )
 
-  /**
-   * Subscribe to action
-   * Call to api signIn
-   * Save token to storage
-   * Remove token if error
-   * Call to api me for fill user
-   * Handler state projecting to main state auth
-   */
   signIn$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthBaseActions.signIn),
@@ -360,12 +373,6 @@ class AuthBaseEffects {
     ),
   )
 
-  /**
-   * Subscribe to action
-   * Call to api signOut
-   * Remove token
-   * Handler state projecting to main state auth
-   */
   signOut$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthBaseActions.signOut),
@@ -385,12 +392,6 @@ class AuthBaseEffects {
     ),
   )
 
-  /**
-   * Subscribe to action
-   * Call to api me
-   * Remove token if error
-   * Handler state projecting to main state auth
-   */
   me$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthBaseActions.me),
@@ -409,13 +410,29 @@ class AuthBaseEffects {
     ),
   )
 
-  /**
-   * Subscribe to action
-   * Call to api refreshToken
-   * Save token
-   * Remove token if error
-   * Handler state projecting to main state auth
-   */
+  meUpdate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthBaseActions.meUpdate),
+      exhaustMap((action) => {
+        return this.api
+          .meUpdate({
+            ...(action.payload as AuthMeUpdatePayload),
+          })
+          .pipe(
+            concatMap(() => this.api.me()),
+            map((user) => AuthBaseActions.meUpdateSuccess({ payload: user })),
+            catchError((error) => {
+              return of(
+                AuthBaseActions.meUpdateFailure({
+                  error: this.errorService.handle(error),
+                }),
+              )
+            }),
+          )
+      }),
+    ),
+  )
+
   refreshToken$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthBaseActions.tokenRefresh),
@@ -486,10 +503,6 @@ class AuthBaseEffects {
 
   constructor() {}
 
-  /**
-   * Save token
-   * If token not available return error
-   */
   private handleSaveToken(response: AuthSignToken): Observable<AuthSignToken> {
     return concat(
       this.storage.setItem("tokenAccess", response.tokenAccess),
@@ -500,9 +513,6 @@ class AuthBaseEffects {
     )
   }
 
-  /**
-   * Remove token
-   */
   private handleRemoveToken(): Observable<void> {
     return concat(
       this.storage.removeItem("tokenAccess"),
@@ -511,7 +521,7 @@ class AuthBaseEffects {
   }
 }
 
-function statusHelper(name: AuthBaseStatusName, action: { type: any }) {
+function statusHelper(name: StatusName, action: { type: any }) {
   const init = {
     useless: false,
     pending: false,
@@ -535,5 +545,4 @@ export {
   AuthBaseEffects,
   AuthBaseFeature,
   type AuthBaseState,
-  type AuthBaseStatusName,
 }

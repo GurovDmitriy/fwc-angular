@@ -2,7 +2,9 @@ import { HttpClient } from "@angular/common/http"
 import { inject, Injectable } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { TOKEN_ENV } from "../../../configuration/env"
+import { HttpCache } from "../../../core/http/http-cache"
 import {
+  AuthMeUpdatePayload,
   AuthSignInPayload,
   AuthSignToken,
   AuthSignUpPayload,
@@ -17,6 +19,7 @@ export class AuthApiService {
   private envService = inject(TOKEN_ENV)
   private httpClient = inject(HttpClient)
   private schema = inject(AuthSchema)
+  private httpCache = inject(HttpCache)
 
   signUp(payload: AuthSignUpPayload): Observable<AuthSignToken> {
     return this.httpClient
@@ -47,8 +50,20 @@ export class AuthApiService {
 
   me(): Observable<AuthUser> {
     return this.httpClient
-      .get<AuthUser>(`${this.envService.apiUrl}/auth/me`)
+      .get<AuthUser>(`${this.envService.apiUrl}/auth/me`, {
+        context: this.httpCache.setKeyCacheSaveCtx("auth/me"),
+      })
       .pipe(map((value) => this.schema.me(value)))
+  }
+
+  meUpdate(payload: AuthMeUpdatePayload): Observable<AuthUser> {
+    return this.httpClient.post<AuthUser>(
+      `${this.envService.apiUrl}/auth/me-update`,
+      payload,
+      {
+        context: this.httpCache.setKeyCacheResetCtx("auth/me"),
+      },
+    )
   }
 
   validateEmail(payload: Pick<AuthSignUpPayload, "email">): Observable<void> {

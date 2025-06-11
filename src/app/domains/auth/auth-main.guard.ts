@@ -9,11 +9,6 @@ import { Store } from "@ngrx/store"
 import { filter, map } from "rxjs"
 import { AuthBaseFeature } from "./auth-base.store"
 
-/**
- * If status success return true
- * If status failure return false
- * Filter "Auth to"
- */
 export const authMainGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,

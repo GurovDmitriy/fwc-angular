@@ -1,10 +1,11 @@
 import { Component } from "@angular/core"
-import { NzColDirective, NzRowDirective } from "ng-zorro-antd/grid"
 import { NzTypographyComponent } from "ng-zorro-antd/typography"
+import { PreviewListComponent } from "../../../ui/features/preview/preview-list/preview-list.component"
 
 @Component({
   selector: "app-page-home",
   templateUrl: "./page-home.component.html",
-  imports: [NzColDirective, NzRowDirective, NzTypographyComponent],
+  styleUrl: "./page-home.component.scss",
+  imports: [NzTypographyComponent, PreviewListComponent],
 })
 export class PageHomeComponent {}

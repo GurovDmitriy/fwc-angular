@@ -1,5 +1,5 @@
 import { AsyncPipe } from "@angular/common"
-import { Component, inject, OnDestroy } from "@angular/core"
+import { Component, DestroyRef, inject, OnInit } from "@angular/core"
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop"
 import { ReactiveFormsModule } from "@angular/forms"
 import { RouterLink } from "@angular/router"
@@ -30,13 +30,15 @@ type Action = "submit"
     NzSpaceItemDirective,
     AsyncPipe,
   ],
+  providers: [AuthSignInUsecase],
   templateUrl: "./sign-in-form.component.html",
   styleUrl: "./sign-in-form.component.scss",
   standalone: true,
 })
-export class SignInFormComponent implements OnDestroy {
+export class SignInFormComponent implements OnInit {
   private actionSubject = new Subject<Action>()
   private action$ = this.actionSubject.asObservable()
+  private destroyRef = inject(DestroyRef)
 
   signIn = inject(AuthSignInUsecase)
 
@@ -47,15 +49,13 @@ export class SignInFormComponent implements OnDestroy {
     }),
   )
 
-  constructor() {
-    this.signInAction$.pipe(takeUntilDestroyed()).subscribe()
+  constructor() {}
+
+  ngOnInit() {
+    this.signInAction$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe()
   }
 
   handleAction(action: Action): void {
     this.actionSubject.next(action)
-  }
-
-  ngOnDestroy() {
-    this.signIn.destroy()
   }
 }

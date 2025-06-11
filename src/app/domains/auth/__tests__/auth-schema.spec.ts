@@ -7,7 +7,7 @@ import {
   TOKEN_ERROR_SERVICE,
 } from "../../../core/error"
 import { AuthSchema } from "../internal"
-import { AuthSignToken } from "../types"
+import { AuthSignToken, AuthUser } from "../types"
 
 describe("AuthSchema", () => {
   let authSchema: AuthSchema
@@ -55,16 +55,14 @@ describe("AuthSchema", () => {
     const responseMapped = authSchema.signIn(mockResponse)
 
     // Assert
-    ;["id", "tokenAccess", "tokenRefresh"].forEach((key) => {
-      expect((responseMapped as any)[key]).toBeTruthy()
-    })
+    expect(responseMapped).toEqual(mockResponse)
   })
 
-  it("signIn should be throw Error", () => {
+  it("signIn should be throw error", () => {
     const mockResponse = {
       id: "123abc",
-      accessToken: "abc",
-      tokenRefresh: "abc",
+      accessToken: "abc", // filed name invalid
+      refreshToken: "abc", // filed name invalid
     } as unknown as AuthSignToken
 
     // Act
@@ -74,15 +72,90 @@ describe("AuthSchema", () => {
     expect(action).toThrowError()
   })
 
-  it.todo("signUp should be return mapped output", () => {})
+  it("signUp should be return mapped output", () => {
+    // Arrange
+    const mockResponse: AuthSignToken = {
+      id: "123abc",
+      tokenAccess: "abc",
+      tokenRefresh: "abc",
+    }
 
-  it.todo("signUp should be throw Error", () => {})
+    // Act
+    const responseMapped = authSchema.signUp(mockResponse)
 
-  it.todo("tokenRefresh should be return mapped output", () => {})
+    // Assert
+    expect(responseMapped).toEqual(mockResponse)
+  })
 
-  it.todo("tokenRefresh should be throw Error", () => {})
+  it("signUp should be throw Error", () => {
+    const mockResponse = {
+      id: "123abc",
+      accessToken: "abc", // filed name invalid
+      refreshToken: "abc", // filed name invalid
+    } as unknown as AuthSignToken
 
-  it.todo("me should be return mapped output", () => {})
+    // Act
+    const action = () => authSchema.signUp(mockResponse)
 
-  it.todo("me should be throw Error", () => {})
+    // Assert
+    expect(action).toThrowError()
+  })
+
+  it("tokenRefresh should be return mapped output", () => {
+    // Arrange
+    const mockResponse: AuthSignToken = {
+      id: "123abc",
+      tokenAccess: "abc",
+      tokenRefresh: "abc",
+    }
+
+    // Act
+    const responseMapped = authSchema.tokenRefresh(mockResponse)
+
+    // Assert
+    expect(responseMapped).toEqual(mockResponse)
+  })
+
+  it("tokenRefresh should be throw error", () => {
+    const mockResponse = {
+      id: "123abc",
+      accessToken: "abc", // filed name invalid
+      refreshToken: "abc", // filed name invalid
+    } as unknown as AuthSignToken
+
+    // Act
+    const action = () => authSchema.tokenRefresh(mockResponse)
+
+    // Assert
+    expect(action).toThrowError()
+  })
+
+  it("me should be return mapped output", () => {
+    // Arrange
+    const mockResponse: AuthUser = {
+      id: "123abc",
+      name: "name",
+      email: "email@gmail.com",
+    }
+
+    // Act
+    const responseMapped = authSchema.me(mockResponse)
+
+    // Assert
+    expect(responseMapped).toEqual(mockResponse)
+  })
+
+  it("me should be throw Error", () => {
+    const mockResponse: AuthUser = {
+      id: "123abc",
+      username: "name", // field name invalid
+      email: "email@gmail.com",
+    } as unknown as AuthUser
+
+    // Act
+    const action = () => authSchema.me(mockResponse)
+
+    // Assert
+    expect(action).toThrowError()
+  })
 })

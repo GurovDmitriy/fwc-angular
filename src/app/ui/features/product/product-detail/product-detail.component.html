@@ -1,0 +1,83 @@
+@let state = state$ | async;
+@let stateCart = stateCart$ | async;
+@let stateAdd = cartAdd.state$ | async;
+@let stateRemove = cartRemove.state$ | async;
+
+<div class="container">
+  <div nz-row [nzGutter]="[16, 16]">
+    <div nz-col class="col" [nzXs]="24" [nzSm]="24" [nzMd]="12">
+      @if (state?.status === "pending") {
+        <div class="skeleton"></div>
+      } @else if (state?.status === "success" && state?.data) {
+        <nz-card
+          [nzCover]="coverTemplate"
+          [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
+        >
+          <nz-card-meta
+            [nzTitle]="state?.data?.id || ''"
+            [nzDescription]="descriptionTemp"
+          ></nz-card-meta>
+        </nz-card>
+
+        <ng-template #coverTemplate>
+          <img class="card-image" alt="example" [src]="state?.data?.image" />
+        </ng-template>
+
+        <ng-template #descriptionTemp>
+          <p>{{ "name: " + state?.data?.name }}</p>
+          <p>{{ "price: " + state?.data?.price }}</p>
+        </ng-template>
+
+        <ng-template #actionSetting>
+          <nz-badge [nzCount]="stateCart!.quantity" [nzOverflowCount]="9">
+            <button
+              nz-button
+              nzType="text"
+              (click)="handleCart()"
+              [disabled]="stateCart?.status === 'pending'"
+            >
+              <nz-icon nzType="shopping-cart" />
+            </button>
+          </nz-badge>
+        </ng-template>
+
+        <ng-template #actionEdit>
+          <button
+            nz-button
+            nzType="text"
+            (click)="handleAdd()"
+            [nzLoading]="stateAdd?.status === 'pending'"
+            [disabled]="stateRemove?.status === 'pending'"
+          >
+            <nz-icon nzType="plus" />
+          </button>
+        </ng-template>
+
+        <ng-template #actionEllipsis>
+          <button
+            nz-button
+            nzType="text"
+            (click)="handleRemove()"
+            [nzLoading]="stateRemove?.status === 'pending'"
+            [disabled]="
+              stateAdd?.status === 'pending' || (stateCart?.quantity ?? 0) < 1
+            "
+          >
+            <nz-icon nzType="minus" />
+          </button>
+        </ng-template>
+      } @else {
+        <div>Product not found</div>
+      }
+    </div>
+
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12">
+      @if (state?.status === "success" && state?.data) {
+        <h2 nz-typography>{{ state?.data?.name | titlecase }}</h2>
+        <p>
+          {{ state?.data?.description }}
+        </p>
+      }
+    </div>
+  </div>
+</div>

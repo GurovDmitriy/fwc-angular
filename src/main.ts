@@ -1,16 +1,24 @@
 import { bootstrapApplication } from "@angular/platform-browser"
-import { mirage } from "./app/__mock__/mirage"
 import { AppComponent } from "./app/app.component"
 import { appConfig } from "./app/app.config"
-import { APP_CONFIG_TESTING_SERVICE } from "./app/configuration/config-testing"
 import { environment } from "./app/configuration/env"
 
-new Promise((resolve) => {
-  if (["development", "testing"].includes(environment.mode)) {
-    mirage(environment, APP_CONFIG_TESTING_SERVICE)
-    resolve(true)
+async function enableMocking() {
+  if (!["production", "development", "testing"].includes(environment.mode)) {
+    return Promise.resolve(true)
   }
-}).then(() => {
+  const { worker, mockDB } = await import("./app/__mock__/msw/worker")
+
+  mockDB.init()
+
+  return worker.start({
+    serviceWorker: {
+      url: `${environment.appUrl}/mockServiceWorker.js`,
+    },
+  })
+}
+
+enableMocking().then(() => {
   bootstrapApplication(AppComponent, appConfig).catch((err) =>
     console.error(err),
   )

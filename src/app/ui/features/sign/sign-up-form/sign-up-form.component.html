@@ -13,9 +13,21 @@
       @for (field of formMeta; track field.name) {
         <app-form-field-dynamic
           [form]="signUp.form"
-          [errorMessage]="errorMessages?.[field.name]"
+          [errorMessage]="errorMessages?.field?.[field.name]"
           [formMeta]="field"
         ></app-form-field-dynamic>
+      }
+
+      @if (errorMessages?.form) {
+        <div class="error-message">
+          <nz-alert nzType="error" [nzMessage]="formErrors"></nz-alert>
+        </div>
+
+        <ng-template #formErrors>
+          @for (err of errorMessages!.form | keyvalue; track err.key) {
+            <p>{{ err.value }}</p>
+          }
+        </ng-template>
       }
 
       @if (state?.error) {
@@ -47,7 +59,6 @@
             [disabled]="state?.status === 'pending' || signUp.form.pending"
             type="button"
             (click)="signUp.toggleAbout()"
-            type="button"
           >
             About
           </button>

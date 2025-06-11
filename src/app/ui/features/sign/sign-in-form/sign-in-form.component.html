@@ -10,10 +10,11 @@
       (ngSubmit)="handleAction('submit')"
     >
       <nz-form-item>
-        <nz-form-control [nzErrorTip]="errorMessages?.email">
+        <nz-form-control [nzErrorTip]="errorMessages?.field?.['email']">
           <nz-input-group nzPrefixIcon="mail">
             <input
               type="email"
+              name="email"
               nz-input
               formControlName="email"
               placeholder="Email"
@@ -23,14 +24,15 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-control [nzErrorTip]="errorMessages?.password">
+        <nz-form-control [nzErrorTip]="errorMessages?.field?.['password']">
           <nz-input-group nzPrefixIcon="lock">
             <input
               type="password"
               nz-input
+              name="password"
               formControlName="password"
               placeholder="Password"
-              autocomplete
+              autocomplete="on"
             />
           </nz-input-group>
         </nz-form-control>
@@ -52,7 +54,7 @@
             type="submit"
             [nzType]="'primary'"
             [nzLoading]="state?.status === 'pending' || signIn.form.pending"
-            [disabled]="!signIn.form.valid"
+            [disabled]="signIn.form.invalid"
           >
             Sign In
           </button>

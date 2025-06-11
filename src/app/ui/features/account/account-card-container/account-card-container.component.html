@@ -1,0 +1,9 @@
+<div class="container">
+  @if (mode() === "default") {
+    <app-account-card (actionEdit)="toggleMode('edit')"></app-account-card>
+  } @else if (mode() === "edit") {
+    <app-account-card-edit (actionReset)="toggleMode('default')">
+      <span ngProjectAs="header">edit account info</span>
+    </app-account-card-edit>
+  }
+</div>

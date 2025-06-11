@@ -1,0 +1,61 @@
+@let state = meUpdate.state$ | async;
+
+<div class="card-container">
+  <nz-card class="card" [nzActions]="[resetTemp, actionBin, saveTemp]">
+    <form
+      nz-form
+      class="form"
+      [formGroup]="meUpdate.form"
+      (ngSubmit)="handleSave()"
+    >
+      <nz-form-item>
+        <p nz-typography nzType="secondary">
+          <ng-content select="header"> card edit </ng-content>
+        </p>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="''">
+          <nz-input-group nzPrefixIcon="user">
+            <input
+              type="text"
+              nz-input
+              formControlName="name"
+              placeholder="Name"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</div>
+
+<ng-template #resetTemp>
+  <button
+    nz-button
+    type="button"
+    nzType="text"
+    [disabled]="state?.status === 'pending'"
+    (click)="handleReset()"
+  >
+    <nz-icon nzType="arrow-left" nzTheme="outline" />
+  </button>
+</ng-template>
+
+<ng-template #actionBin>
+  <button nz-button nzType="text" type="button" [disabled]="true">
+    <nz-icon nzType="delete" />
+  </button>
+</ng-template>
+
+<ng-template #saveTemp>
+  <button
+    nz-button
+    nzType="primary"
+    type="button"
+    [nzLoading]="state?.status === 'pending'"
+    [disabled]="meUpdate.form.invalid"
+    (click)="handleSave()"
+  >
+    save
+  </button>
+</ng-template>

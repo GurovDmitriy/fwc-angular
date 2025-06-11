@@ -1,0 +1,28 @@
+@let state = state$ | async;
+
+<div class="container">
+  <div nz-row [nzGutter]="[16, 16]">
+    @if (state?.status === "pending") {
+      @for (item of placeholder; track item.id) {
+        <div nz-col class="col" [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="6">
+          <div class="skeleton"></div>
+        </div>
+      }
+    } @else {
+      @for (item of $any(state?.data?.data); track item.id) {
+        <div nz-col class="col" [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="6">
+          <nz-card [nzCover]="coverTemp" class="image-card"></nz-card>
+
+          <ng-template #coverTemp>
+            <div class="image-box">
+              <img class="image" [ngSrc]="item.image" alt="sneakers" fill />
+              <a class="image-name" [routerLink]="'/category/' + item.id">{{
+                item.name
+              }}</a>
+            </div>
+          </ng-template>
+        </div>
+      }
+    }
+  </div>
+</div>
